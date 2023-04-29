@@ -1,8 +1,10 @@
+/* main container*/
 .container {
     margin: auto;
     display:flex;
     justify-content: center;
 
+/* board side */
 }
 #board {
     background-color: #eee;
@@ -19,3 +21,33 @@
     align-items: center;
     justify-content: center;
 }
+
+.ball {
+    position: absolute;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
+.red {
+    background-color: red;
+  }
+  
+.green {
+    background-color: green;
+  }
+  
+.blue {
+    background-color: blue;
+  }
+  
+.yellow {
+    background-color: yellow;
+  }
+  
+.purple {
+    background-color: purple;
+  }
+  
+.orange {
+    background-color: orange;
+  }
