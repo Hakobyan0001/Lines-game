@@ -1,5 +1,5 @@
 function moveClickedBall() {
-    let selectedBall = null;
+    let selectedBall;
     cubes.each(function () {
         $(this).on('click', function () {
             const ball = $(this).find('.ball');
