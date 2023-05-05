@@ -45,3 +45,86 @@
 // addRandomBalls();
 // moveClickedBall();
 
+// l - board length
+let board = [];
+const COLORS = ["red", "green", "blue"];
+
+
+
+
+
+
+function createBoard(length) {
+    fillBoard(length);
+
+}
+
+function addRandomBalls(number, color = "red",) {
+    getRandomNumber(number);
+    getRandomColor(color);
+    getRandomIndex();
+}
+
+function getRandomNumber(limit) {
+
+}
+
+function getRandomColor(limit) {
+
+}
+
+function getRandomIndex() {
+
+}
+
+function addBall(color = "red", index) {
+    getRandomColor(color);
+}
+
+function removeBall(index) {
+
+}
+
+function moveBall(index) {
+
+}
+
+function selectBall(color, index) {
+
+}
+
+function disSelectBall(index) {
+
+}
+
+function fillBoard(boardLength) {
+
+}
+
+function updateBoard() {
+
+}
+
+
+function startGame() {
+    const BOARD_LENGTH = 9;
+    const RANDOM_BALLS_COUNT = 3;
+
+
+    createBoard(BOARD_LENGTH);
+    addRandomBalls(RANDOM_BALLS_COUNT);
+    addBall(color, index);
+    removeBall(index);
+    selectBall(color, index);
+    disSelectBall(color, index);
+
+}
+
+
+
+
+
+
+
+
+startGame();
