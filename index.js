@@ -46,36 +46,40 @@
 // moveClickedBall();
 
 // l - board length
-let board = getBoard();
+let board = [];
 const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
-const CUBES = [];
+// const CUBES = [];
 let indices = [];
 
 
 
 
 
-function createBoard(length) {
-    renderBoard(length);
-}
-
-function renderBoard(boardLength) {
+function createBoard(boardLength) {
     for (let i = 0; i < boardLength ** 2; i++) {
-        const cube = $('<div></div>').addClass('cube');
-        board.append(cube);
-        CUBES.push(cube);
+        const cube = null
+        board.push(cube);
+        indices.push(i);
+        updateBoard();
     }
+    renderBoard();
 }
 
-function getBoard() {
-    const takeBoard = $("#board").each(function (currentValue, index) {
-        if (!currentValue) {
-            return;
-        }
-        renderBall(currentValue, index);
+function updateBoard() {
+    board.forEach(function () {
+        const cube = $('<div></div>').addClass('cube');
+        let index = board.indexOf(indices);
+        board.splice(index, 1, cube);
+        // CUBES.push(cube);
     })
-    return takeBoard;
-
+}
+function renderBoard() {
+    // $("#board").each(function (currentValue, index) {
+    //     if (!currentValue) {
+    //         return;
+    //     }
+    //     renderBall(currentValue, index);
+    // })
 }
 
 function addRandomBalls(ballsNumber, index, color) {
