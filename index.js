@@ -49,19 +49,19 @@
 let board = [];
 const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 let indices = [];
+const BALLS_INDICES = [];
+let balls = [];
 
-
-
-
-
+// creating board
 function createBoard(boardLength) {
     for (let i = 0; i < boardLength ** 2; i++) {
-        const CUBE = null
-        board.push(CUBE);
+        const CUBES = 0;
+        board.push(CUBES);
         indices.push(i);
         updateBoard();
     }
     renderBoard();
+
 }
 
 function updateBoard() {
@@ -75,22 +75,28 @@ function renderBoard() {
     $("#board").append(board);
 }
 
+
+// creating and adding balls
 function addRandomBalls(ballsNumber, index, color) {
-    const NEW_INDICES = [];
-    while (NEW_INDICES.length < ballsNumber) {
-        let a = getRandomIndex(index);
-        if (!indices.includes(a) && !NEW_INDICES.includes(a)) {
-            NEW_INDICES.push(a);
+
+    while (BALLS_INDICES.length < ballsNumber) {
+        let randomIndex = getRandomIndex(index);
+        if (!BALLS_INDICES.includes(randomIndex)) {
+            BALLS_INDICES.push(randomIndex);
         }
     }
-    CUBES.forEach(function (index) {
-        if (NEW_INDICES.includes(index)) {
+    console.log(BALLS_INDICES)
+    $(board).each(function (index) {
+        if (BALLS_INDICES.includes(index)) {
+            console.log(index);
             let addColor = getRandomColor(color);
             console.log(addColor);
-            $(this).append('<div class="ball ' + addColor + '"></div>');
+            // cant add ball
+            balls.push($(this).addClass("ball"));
+            board.splice(index, 1, balls);
         }
     });
-    indices = indices.concat(NEW_INDICES);
+
 }
 
 function getRandomNumber(limit) {
@@ -98,9 +104,9 @@ function getRandomNumber(limit) {
     return ballsNumber;
 }
 
-function getRandomColor(RANDOM_COLORS_COUNT) {
-    let ballColor = COLORS[Math.floor(Math.random() * RANDOM_COLORS_COUNT)];
-    console.log(ballColor);
+function getRandomColor(randomColorCount) {
+    let ballColor = COLORS[Math.floor(Math.random() * randomColorCount)];
+    return ballColor;
 }
 
 function getRandomIndex(number) {
@@ -111,6 +117,8 @@ function getRandomIndex(number) {
 function renderBall(ball, index) {
     $("board").append("ball");
 }
+
+
 
 function removeBall(index) {
 
@@ -136,10 +144,10 @@ function fillBoard(boardLength) {
 function startGame() {
     const BOARD_LENGTH = 9;
     const RANDOM_BALLS_COUNT = 3;
-    const RANDOM_COLORS_COUNT = 7;
+    const RANDOM_COLORS_COUNT = 6;
 
     createBoard(BOARD_LENGTH);
-    //addRandomBalls(RANDOM_BALLS_COUNT, BOARD_LENGTH, RANDOM_COLORS_COUNT);
+    addRandomBalls(RANDOM_BALLS_COUNT, BOARD_LENGTH, RANDOM_COLORS_COUNT);
     // addBall(color, index);
     // removeBall(index);
     // selectBall(color, index);
