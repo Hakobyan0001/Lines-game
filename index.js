@@ -51,17 +51,17 @@ const COLORS = ['red', 'green', 'blue', 'yellow', 'purple', 'orange'];
 let indices = [];
 const BALLS_INDICES = [];
 let balls = [];
+const CUBE = [];
 
 // creating board
 function createBoard(boardLength) {
     for (let i = 0; i < boardLength ** 2; i++) {
-        const CUBES = 0;
-        board.push(CUBES);
+        board.push(null);
         indices.push(i);
         updateBoard();
+
     }
     renderBoard();
-
 }
 
 function updateBoard() {
@@ -85,15 +85,10 @@ function addRandomBalls(ballsNumber, index, color) {
             BALLS_INDICES.push(randomIndex);
         }
     }
-    console.log(BALLS_INDICES)
     $(board).each(function (index) {
         if (BALLS_INDICES.includes(index)) {
-            console.log(index);
-            let addColor = getRandomColor(color);
-            console.log(addColor);
-            // cant add ball
-            balls.push($(this).addClass("ball"));
-            board.splice(index, 1, balls);
+            const ADD_COLOR = getRandomColor(color);
+            $(this).append('<div class="ball ' + ADD_COLOR + ' "></div>');
         }
     });
 
