@@ -31,6 +31,15 @@
     height: 40px;
 }
 
+.selectedBall {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 60%;
+    width: 35px;
+    height: 35px;
+}
+
+
 .red {
     background-color: red;
 }

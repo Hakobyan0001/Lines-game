@@ -1,19 +1,18 @@
 let board;
 const COLORS = ['red', 'green', 'blue'];
-let emptyCelssIndices = [];
-let emptyCells = [];
-// filter, map imanal inca anum
-// randomi harcy lucel, 
+let emptyCellsIndices = [];
+// sarqel select functiony guyn poxel sexmelu jamanak
+// texapoxel ayl vandak gndaky
+
 // creating board
 function createBoard(boardLength) {
     board = new Array(boardLength ** 2).fill(null);
-    emptyCelssIndices = board.map((element, index) => index);
+    emptyCellsIndices = board.map((element, index) => index);
     initBoardview();
 }
 
 // show board in page
 function initBoardview() {
-    //array
     board.forEach(function (cell, index) {
         const CUBE_ELEMENT = $('<div></div>').attr({
             'class': 'cube',
@@ -27,13 +26,15 @@ function initBoardview() {
 function updateBoardView() {
     board.forEach(function (ball, index) {
         if (ball) {
-            const BALL_ELEMENT = $('<div class="ball ' + ball.color + '"></div>')
-            $("#" + index).append(BALL_ELEMENT);
-            emptyCelssIndices.splice(index, 1);
+            if (ball['isActive'] === false) {
+                const BALL_ELEMENT = $('<div class="ball ' + COLORS[ball.color] + '"></div>')
+                $("#" + index).append(BALL_ELEMENT);
+            }
+            if (ball['isActive'] === true) {
+                $(".ball").removeClass("ball").addClass("selectedBall");
+            }
         }
-
     })
-    console.log(emptyCelssIndices);
 
 }
 
@@ -41,15 +42,15 @@ function updateBoardView() {
 function createRandomBalls(ballsNumber) {
     let i = 0;
     while (i < ballsNumber) {
-
-
         const RANDOM_INDEX = getRandomIndex();
-        const RANDOM_COLOR = COLORS[getRandomColor()];
-        const BALL = {
+        const RANDOM_COLOR = getRandomColor();
+        //poxeci let vor karanam meji arjeqnery poxem
+        let ball = {
             color: RANDOM_COLOR,
             isActive: false
         }
-        board[RANDOM_INDEX] = BALL
+        board[RANDOM_INDEX] = ball
+        emptyCellsIndices = emptyCellsIndices.filter(el => el !== RANDOM_INDEX);
         i++;
     }
 }
@@ -60,14 +61,12 @@ function getRandomNumber(limit) {
 }
 
 function getRandomColor() {
-    let ballColor = getRandomNumber(COLORS.indexOf('red'), COLORS.length - 1);
+    let ballColor = getRandomNumber(0, COLORS.length - 1);
     return ballColor;
 }
 
 function getRandomIndex() {
-    emptyCells = emptyCelssIndices.filter(cell => cell)
-    // console.log(emptyCells);
-    const RANDOM_INDEX = getRandomNumber(emptyCells[0], emptyCells.length - 1);
+    const RANDOM_INDEX = getRandomNumber(0, emptyCellsIndices.length - 1);
     return RANDOM_INDEX;
 }
 
@@ -77,35 +76,27 @@ function getRandomNumber(from, to) {
     return Math.floor(Math.random() * (max - min + 1) + min);;
 }
 
-function renderBall(ball, index) {
-    // $("board").append("ball");
+function selectBall() {
+    board.forEach(function (ball, index) {
+        $("#" + index).on('click', function () {
+            if (ball) {
+                ball['isActive'] = true;
+                console.log(ball);
+                updateBoardView();
+
+            }
+        })
+
+    })
 }
 
-
-
-function removeBall(index) {
-
+function removeBall() {
 }
 
 function moveBall(index) {
 
 }
 
-// function selectBall() {
-//     let selectedBall;
-//     $("#board").on('click', function (ball, index) {
-//         const BALL = $("#" + index).find('.ball');
-//         debugger;
-//         if (selectedBall && !BALL.length) {
-//             $(this).append(selectedBall);
-//             selectedBall = null;
-//         }
-//         else if (BALL.length && !selectedBall) {
-//             selectedBall = BALL.detach();
-//         }
-
-//     });
-// }
 
 function disSelectBall(index) {
 
@@ -123,9 +114,10 @@ function startGame() {
     createBoard(BOARD_LENGTH);
     createRandomBalls(RANDOM_BALLS_COUNT);
     updateBoardView();
+    selectBall();
+    // removeBall();
     // addBall(color, index);
-    // removeBall(index);
-    // selectBall();
+
     // disSelectBall(color, index);
 }
 
