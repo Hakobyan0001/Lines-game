@@ -31,7 +31,9 @@ function updateBoardView() {
                 $("#" + index).append(BALL_ELEMENT);
             }
             if (ball['isActive'] === true) {
-                $(".ball").removeClass("ball").addClass("selectedBall");
+                $("#" + index).empty();
+                const SELECTED_BALL_ELEMENT = $('<div class="selectedBall ' + COLORS[ball.color] + '"></div>')
+                $("#" + index).append(SELECTED_BALL_ELEMENT);
             }
         }
     })
@@ -77,15 +79,18 @@ function getRandomNumber(from, to) {
 }
 
 function selectBall() {
+    let selectedBall = [];
     board.forEach(function (ball, index) {
         $("#" + index).on('click', function () {
-            if (ball) {
+
+            if (ball && selectedBall.length < 1) {
                 ball['isActive'] = true;
-                console.log(ball);
+                selectedBall.push(ball);
                 updateBoardView();
 
             }
         })
+
 
     })
 }
