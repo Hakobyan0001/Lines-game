@@ -1,8 +1,7 @@
 let board;
 const COLORS = ['red', 'green', 'blue'];
 let emptyCellsIndices = [];
-// sarqel select functiony guyn poxel sexmelu jamanak
-// texapoxel ayl vandak gndaky
+let selectedBall = [];
 
 // creating board
 function createBoard(boardLength) {
@@ -26,15 +25,18 @@ function initBoardview() {
 function updateBoardView() {
     board.forEach(function (ball, index) {
         if (ball) {
-            if (ball['isActive'] === false) {
+            if (ball.isActive === false) {
+                $("#" + index).empty();
                 const BALL_ELEMENT = $('<div class="ball ' + COLORS[ball.color] + '"></div>')
                 $("#" + index).append(BALL_ELEMENT);
             }
-            if (ball['isActive'] === true) {
+            if (ball.isActive === true) {
                 $("#" + index).empty();
                 const SELECTED_BALL_ELEMENT = $('<div class="selectedBall ' + COLORS[ball.color] + '"></div>')
                 $("#" + index).append(SELECTED_BALL_ELEMENT);
             }
+        } else {
+            $("#" + index).empty();
         }
     })
 
@@ -46,15 +48,15 @@ function createRandomBalls(ballsNumber) {
     while (i < ballsNumber) {
         const RANDOM_INDEX = getRandomIndex();
         const RANDOM_COLOR = getRandomColor();
-        //poxeci let vor karanam meji arjeqnery poxem
-        let ball = {
+        const BALL = {
             color: RANDOM_COLOR,
             isActive: false
         }
-        board[RANDOM_INDEX] = ball
+        board[RANDOM_INDEX] = BALL
         emptyCellsIndices = emptyCellsIndices.filter(el => el !== RANDOM_INDEX);
         i++;
     }
+    updateBoardView();
 }
 
 function getRandomNumber(limit) {
@@ -78,39 +80,46 @@ function getRandomNumber(from, to) {
     return Math.floor(Math.random() * (max - min + 1) + min);;
 }
 
+// click and select ball
 function selectBall() {
-    let selectedBall = [];
     board.forEach(function (ball, index) {
         $("#" + index).on('click', function () {
-
             if (ball && selectedBall.length < 1) {
-                ball['isActive'] = true;
+                ball.isActive = true;
                 selectedBall.push(ball);
-                updateBoardView();
-
+                moveBall(ball, index);
+            } else if (ball && ball.isActive && selectedBall.length === 1) {
+                disSelectBall(ball);
             }
+            updateBoardView();
         })
-
-
     })
 }
 
+// click and disselect ball
+function disSelectBall(ball) {
+    ball.isActive = false;
+    selectedBall.splice(0, 1);
+
+}
+
+// moving the ball to the clicked empty cell
+function moveBall(clickedBall, clickedBallIndex) {
+    board.forEach(function (ball, index) {
+        $("#" + index).on('click', function () {
+            if (!ball) {
+                board[index] = clickedBall;
+                board[clickedBallIndex] = null;
+                disSelectBall(clickedBall);
+                console.log(board);
+            }
+            updateBoardView();
+
+        })
+    })
+}
 function removeBall() {
 }
-
-function moveBall(index) {
-
-}
-
-
-function disSelectBall(index) {
-
-}
-
-function fillBoard(boardLength) {
-
-}
-
 
 function startGame() {
     const BOARD_LENGTH = 9;
@@ -118,18 +127,10 @@ function startGame() {
 
     createBoard(BOARD_LENGTH);
     createRandomBalls(RANDOM_BALLS_COUNT);
-    updateBoardView();
     selectBall();
     // removeBall();
     // addBall(color, index);
-
-    // disSelectBall(color, index);
 }
-
-
-
-
-
 
 
 startGame();
