@@ -1,7 +1,10 @@
 let board;
+const BOARD_LENGTH = 9;
+const RANDOM_BALLS_COUNT = 3;
 const COLORS = ['red', 'green', 'blue'];
 let emptyCellsIndices = [];
-let selectedBall = [];
+let selectedBallIndex;
+
 
 // creating board
 function createBoard(boardLength) {
@@ -16,7 +19,7 @@ function initBoardview() {
         const CUBE_ELEMENT = $('<div></div>').attr({
             'class': 'cube',
             'id': index
-        })
+        }).on("click", () => handelCellClick(index));
         $('#board').append(CUBE_ELEMENT);
     })
 }
@@ -48,12 +51,15 @@ function createRandomBalls(ballsNumber) {
     while (i < ballsNumber) {
         const RANDOM_INDEX = getRandomIndex();
         const RANDOM_COLOR = getRandomColor();
+
         const BALL = {
             color: RANDOM_COLOR,
             isActive: false
         }
-        board[RANDOM_INDEX] = BALL
-        emptyCellsIndices = emptyCellsIndices.filter(el => el !== RANDOM_INDEX);
+        board[emptyCellsIndices[RANDOM_INDEX]] = BALL;
+        emptyCellsIndices = emptyCellsIndices.filter(el => el !== emptyCellsIndices[RANDOM_INDEX]);
+        console.log("EMPTY CELLS INDICES", emptyCellsIndices);
+
         i++;
     }
     updateBoardView();
@@ -74,60 +80,62 @@ function getRandomIndex() {
     return RANDOM_INDEX;
 }
 
-function getRandomNumber(from, to) {
-    let min = Math.ceil(from);
-    let max = Math.floor(to);
-    return Math.floor(Math.random() * (max - min + 1) + min);;
+function getRandomNumber(min, max) {
+    const RANDOM_NUMBER = Math.floor(Math.random() * (max - min + 1) + min);
+    return RANDOM_NUMBER;
 }
 
-// click and select ball
-function selectBall() {
-    board.forEach(function (ball, index) {
-        $("#" + index).on('click', function () {
-            if (ball && selectedBall.length < 1) {
-                ball.isActive = true;
-                selectedBall.push(ball);
-                moveBall(ball, index);
-            } else if (ball && ball.isActive && selectedBall.length === 1) {
-                disSelectBall(ball);
-            }
-            updateBoardView();
-        })
-    })
+function handelCellClick(index) {
+    const BALL = board[index]
+    if (!BALL && selectedBallIndex === undefined) {
+        return;
+    }
+    if (BALL && BALL.isActive === false && selectedBallIndex === undefined) {
+        BALL.isActive = true;
+        selectedBallIndex = index;
+        updateBoardView();
+        return;
+    }
+    if (BALL && BALL.isActive === true && selectedBallIndex === index) {
+        disSelectBall(BALL);
+        updateBoardView();
+        return;
+    }
+    if (!BALL && (selectedBallIndex || selectedBallIndex === 0)) {
+        moveBall(selectedBallIndex, index);
+        updateBoardView();
+        return;
+    }
 }
 
 // click and disselect ball
 function disSelectBall(ball) {
     ball.isActive = false;
-    selectedBall.splice(0, 1);
-
+    selectedBallIndex = undefined;
 }
 
 // moving the ball to the clicked empty cell
-function moveBall(clickedBall, clickedBallIndex) {
-    board.forEach(function (ball, index) {
-        $("#" + index).on('click', function () {
-            if (!ball) {
-                board[index] = clickedBall;
-                board[clickedBallIndex] = null;
-                disSelectBall(clickedBall);
-                console.log(board);
-            }
-            updateBoardView();
+function moveBall(selectedBallIndex, clickedCellIndex) {
+    board[clickedCellIndex] = board[selectedBallIndex];
+    board[selectedBallIndex] = null;
 
-        })
-    })
+    console.log(clickedCellIndex, selectedBallIndex)
+    emptyCellsIndices.push(selectedBallIndex);
+    emptyCellsIndices = emptyCellsIndices.filter(el => el !== clickedCellIndex);
+    console.log("EMPTY CELLS INDICES", emptyCellsIndices);
+    disSelectBall(board[clickedCellIndex]);
+    createRandomBalls(RANDOM_BALLS_COUNT);
+
 }
 function removeBall() {
 }
 
 function startGame() {
-    const BOARD_LENGTH = 9;
-    const RANDOM_BALLS_COUNT = 3;
+
 
     createBoard(BOARD_LENGTH);
     createRandomBalls(RANDOM_BALLS_COUNT);
-    selectBall();
+    // selectBall();
     // removeBall();
     // addBall(color, index);
 }
