@@ -58,7 +58,6 @@ function createRandomBalls(ballsNumber) {
         }
         board[emptyCellsIndices[RANDOM_INDEX]] = BALL;
         emptyCellsIndices = emptyCellsIndices.filter(el => el !== emptyCellsIndices[RANDOM_INDEX]);
-        console.log("EMPTY CELLS INDICES", emptyCellsIndices);
 
         i++;
     }
@@ -104,6 +103,8 @@ function handelCellClick(index) {
     if (!BALL && (selectedBallIndex || selectedBallIndex === 0)) {
         moveBall(selectedBallIndex, index);
         updateBoardView();
+        removeHorizontalBallsLine();
+        removeVerticalBallsLine();
         return;
     }
 }
@@ -118,26 +119,106 @@ function disSelectBall(ball) {
 function moveBall(selectedBallIndex, clickedCellIndex) {
     board[clickedCellIndex] = board[selectedBallIndex];
     board[selectedBallIndex] = null;
-
-    console.log(clickedCellIndex, selectedBallIndex)
     emptyCellsIndices.push(selectedBallIndex);
     emptyCellsIndices = emptyCellsIndices.filter(el => el !== clickedCellIndex);
-    console.log("EMPTY CELLS INDICES", emptyCellsIndices);
     disSelectBall(board[clickedCellIndex]);
     createRandomBalls(RANDOM_BALLS_COUNT);
 
 }
-function removeBall() {
+// function removeBallsLine() {
+
+//     let redBalls = [];
+//     let blueBalls = [];
+//     let greenBalls = [];
+//     let i = 0;
+//     const REQUIRED_NUMBER_OF_BALLS = 5;
+//     board.forEach(function (ball, index) {
+//         // debugger;
+
+//         if (ball) {
+//             while (i < REQUIRED_NUMBER_OF_BALLS) {
+//                 if (ball.color === 0) {
+//                     redBalls.push(ball);
+//                     console.log("red", redBalls);
+//                 }
+//                 if (ball.color === 1) {
+//                     greenBalls.push(ball);
+//                     console.log("green", greenBalls);
+
+//                 }
+//                 if (ball.color === 2) {
+//                     blueBalls.push(ball);
+//                     console.log("blue", blueBalls);
+
+//                 }
+//                 i++
+//             }
+//         } else {
+//             i = 0;
+//             redBalls = [];
+//             blueBalls = [];
+//             greenBalls = [];
+//         }
+//     })
+
+//     updateBoardView();
+
+// }
+function removeHorizontalBallsLine() {
+    const REQUIRED_NUMBER_OF_BALLS = 5;
+    let checkedBallsColor = null;
+    let ballsCount = 0;
+    for (let row = 0; row < BOARD_LENGTH; row++) {
+        for (let col = 0; col < BOARD_LENGTH; col++) {
+            const BALL = board[row * BOARD_LENGTH + col];
+            if (BALL && BALL.color === checkedBallsColor) {
+                ballsCount++;
+            } else {
+                ballsCount = 1;
+                checkedBallsColor = BALL ? BALL.color : null;
+            }
+            if (ballsCount === REQUIRED_NUMBER_OF_BALLS) {
+                for (let i = col - ballsCount + 1; i <= col; i++) {
+                    let removedBallIndex = row * BOARD_LENGTH + i;
+                    emptyCellsIndices.push(removedBallIndex);
+                    board[removedBallIndex] = null;
+                }
+                break;
+            }
+        }
+    }
+    updateBoardView();
 }
-
+function removeVerticalBallsLine() {
+    const REQUIRED_NUMBER_OF_BALLS = 5;
+    let checkedBallsColor = null;
+    let ballsCount = 0;
+    for (let col = 0; col < BOARD_LENGTH; col++) {
+        debugger;
+        for (let row = 0; row < BOARD_LENGTH; row++) {
+            const BALL = board[col + row * BOARD_LENGTH];
+            if (BALL && BALL.color === checkedBallsColor) {
+                ballsCount++;
+            } else {
+                ballsCount = 1;
+                checkedBallsColor = BALL ? BALL.color : null;
+            }
+            if (ballsCount === REQUIRED_NUMBER_OF_BALLS) {
+                for (let i = row - ballsCount + 1; i <= row; i++) {
+                    let removedBallIndex = col + (i * BOARD_LENGTH);
+                    emptyCellsIndices.push(removedBallIndex);
+                    board[removedBallIndex] = null;
+                }
+                break;
+            }
+        }
+    }
+    updateBoardView();
+}
 function startGame() {
-
-
     createBoard(BOARD_LENGTH);
     createRandomBalls(RANDOM_BALLS_COUNT);
-    // selectBall();
-    // removeBall();
-    // addBall(color, index);
+
 }
 
 
