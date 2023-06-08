@@ -1,10 +1,10 @@
 let board;
-const BOARD_LENGTH = 9;
-const RANDOM_BALLS_COUNT = 3;
+let boardLength = 9;
+let randomBallsCount = 3;
 const COLORS = ['red', 'green', 'blue'];
 let emptyCellsIndices = [];
 let selectedBallIndex;
-
+let gamePoint = 0;
 
 // creating board
 function createBoard(boardLength) {
@@ -21,6 +21,11 @@ function initBoardview() {
             'id': index
         }).on("click", () => handelCellClick(index));
         $('#board').append(CUBE_ELEMENT);
+        $('#board').css({
+            "width": 50 * boardLength,
+            "height": 50 * boardLength,
+            "grid-template-columns": "repeat(" + boardLength + ", 1fr)"
+        });
     })
 }
 
@@ -42,7 +47,7 @@ function updateBoardView() {
             $("#" + index).empty();
         }
     })
-
+    $("h2").text("YOUR GAME POINT IS -" + " " + gamePoint);
 }
 
 // creating balls and pushing in board
@@ -64,26 +69,25 @@ function createRandomBalls(ballsNumber) {
     updateBoardView();
 }
 
-function getRandomNumber(limit) {
-    let ballsNumber = Math.floor(Math.random() * limit);
-    return ballsNumber;
-}
-
+// geting random color for ball
 function getRandomColor() {
     let ballColor = getRandomNumber(0, COLORS.length - 1);
     return ballColor;
 }
 
+// geting random index for ball
 function getRandomIndex() {
     const RANDOM_INDEX = getRandomNumber(0, emptyCellsIndices.length - 1);
     return RANDOM_INDEX;
 }
 
+// geting a random number among the given numbers
 function getRandomNumber(min, max) {
     const RANDOM_NUMBER = Math.floor(Math.random() * (max - min + 1) + min);
     return RANDOM_NUMBER;
 }
 
+// checking the clicked cube and perform an action
 function handelCellClick(index) {
     const BALL = board[index]
     if (!BALL && selectedBallIndex === undefined) {
@@ -122,55 +126,18 @@ function moveBall(selectedBallIndex, clickedCellIndex) {
     emptyCellsIndices.push(selectedBallIndex);
     emptyCellsIndices = emptyCellsIndices.filter(el => el !== clickedCellIndex);
     disSelectBall(board[clickedCellIndex]);
-    createRandomBalls(RANDOM_BALLS_COUNT);
+    createRandomBalls(randomBallsCount);
 
 }
-// function removeBallsLine() {
 
-//     let redBalls = [];
-//     let blueBalls = [];
-//     let greenBalls = [];
-//     let i = 0;
-//     const REQUIRED_NUMBER_OF_BALLS = 5;
-//     board.forEach(function (ball, index) {
-//         // debugger;
-
-//         if (ball) {
-//             while (i < REQUIRED_NUMBER_OF_BALLS) {
-//                 if (ball.color === 0) {
-//                     redBalls.push(ball);
-//                     console.log("red", redBalls);
-//                 }
-//                 if (ball.color === 1) {
-//                     greenBalls.push(ball);
-//                     console.log("green", greenBalls);
-
-//                 }
-//                 if (ball.color === 2) {
-//                     blueBalls.push(ball);
-//                     console.log("blue", blueBalls);
-
-//                 }
-//                 i++
-//             }
-//         } else {
-//             i = 0;
-//             redBalls = [];
-//             blueBalls = [];
-//             greenBalls = [];
-//         }
-//     })
-
-//     updateBoardView();
-
-// }
+// removing horizantal same colored balls line
 function removeHorizontalBallsLine() {
     const REQUIRED_NUMBER_OF_BALLS = 5;
     let checkedBallsColor = null;
     let ballsCount = 0;
-    for (let row = 0; row < BOARD_LENGTH; row++) {
-        for (let col = 0; col < BOARD_LENGTH; col++) {
-            const BALL = board[row * BOARD_LENGTH + col];
+    for (let row = 0; row < boardLength; row++) {
+        for (let col = 0; col < boardLength; col++) {
+            const BALL = board[row * boardLength + col];
             if (BALL && BALL.color === checkedBallsColor) {
                 ballsCount++;
             } else {
@@ -179,9 +146,10 @@ function removeHorizontalBallsLine() {
             }
             if (ballsCount === REQUIRED_NUMBER_OF_BALLS) {
                 for (let i = col - ballsCount + 1; i <= col; i++) {
-                    let removedBallIndex = row * BOARD_LENGTH + i;
+                    let removedBallIndex = row * boardLength + i;
                     emptyCellsIndices.push(removedBallIndex);
                     board[removedBallIndex] = null;
+                    gamePoint = gamePoint + 1;
                 }
                 break;
             }
@@ -189,14 +157,15 @@ function removeHorizontalBallsLine() {
     }
     updateBoardView();
 }
+
+// removing vertical same colored balls line
 function removeVerticalBallsLine() {
     const REQUIRED_NUMBER_OF_BALLS = 5;
     let checkedBallsColor = null;
     let ballsCount = 0;
-    for (let col = 0; col < BOARD_LENGTH; col++) {
-        debugger;
-        for (let row = 0; row < BOARD_LENGTH; row++) {
-            const BALL = board[col + row * BOARD_LENGTH];
+    for (let col = 0; col < boardLength; col++) {
+        for (let row = 0; row < boardLength; row++) {
+            const BALL = board[col + row * boardLength];
             if (BALL && BALL.color === checkedBallsColor) {
                 ballsCount++;
             } else {
@@ -205,9 +174,10 @@ function removeVerticalBallsLine() {
             }
             if (ballsCount === REQUIRED_NUMBER_OF_BALLS) {
                 for (let i = row - ballsCount + 1; i <= row; i++) {
-                    let removedBallIndex = col + (i * BOARD_LENGTH);
+                    let removedBallIndex = col + (i * boardLength);
                     emptyCellsIndices.push(removedBallIndex);
                     board[removedBallIndex] = null;
+                    gamePoint = gamePoint + 1;
                 }
                 break;
             }
@@ -215,11 +185,18 @@ function removeVerticalBallsLine() {
     }
     updateBoardView();
 }
-function startGame() {
-    createBoard(BOARD_LENGTH);
-    createRandomBalls(RANDOM_BALLS_COUNT);
+
+function removeDiagonalBallsLine() {
 
 }
 
+
+function startGame() {
+    boardLength = prompt("write the number of vertical and horizontal boxes");
+    randomBallsCount = prompt("write the number of balls you wanted to add");
+    createBoard(boardLength);
+    createRandomBalls(randomBallsCount);
+
+}
 
 startGame();
