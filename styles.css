@@ -4,15 +4,13 @@
     display: flex;
     justify-content: center;
 
-    /* board side */
+
 }
 
+/* board side */
 #board {
     background-color: #eee;
-    width: 450px;
-    height: 450px;
     display: grid;
-    grid-template-columns: repeat(9, 1fr);
 }
 
 .cube {
