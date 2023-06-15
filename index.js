@@ -1,5 +1,6 @@
 let board;
-let boardLength = 9;
+let boardLength;
+let randomBallsCount;
 const COLORS = ['red', 'green', 'blue'];
 let emptyCellsIndices = [];
 let selectedBallIndex;
@@ -7,8 +8,9 @@ let gamePoint = 0;
 const REQUIRED_NUMBER_OF_BALLS = 5;
 
 // creating board
-function createBoard(boardLength) {
+function createBoard() {
     board = new Array(boardLength ** 2).fill(null);
+
     emptyCellsIndices = board.map((element, index) => index);
     initBoardview();
 }
@@ -29,33 +31,11 @@ function initBoardview() {
     })
 }
 
-// show balls in page
-function updateBoardView() {
-    board.forEach(function (ball, index) {
-
-        if (ball) {
-            if (ball.isActive === false) {
-                $("#" + index).empty();
-                const BALL_ELEMENT = $('<div class="ball ' + COLORS[ball.color] + '"></div>')
-                $("#" + index).append(BALL_ELEMENT);
-            }
-            if (ball.isActive === true) {
-                $("#" + index).empty();
-                const SELECTED_BALL_ELEMENT = $('<div class="selectedBall ' + COLORS[ball.color] + '"></div>')
-                $("#" + index).append(SELECTED_BALL_ELEMENT);
-            }
-        } else {
-            $("#" + index).empty();
-        }
-    })
-    $("h2").text("YOUR GAME POINT IS -" + " " + gamePoint);
-}
-
 // creating balls and pushing in board
-function createRandomBalls(ballsNumber) {
+function createRandomBalls() {
     let i = 0;
 
-    while (i < ballsNumber) {
+    while (i < randomBallsCount) {
         const RANDOM_INDEX = getRandomIndex();
         const RANDOM_COLOR = getRandomColor();
 
@@ -71,6 +51,34 @@ function createRandomBalls(ballsNumber) {
     updateBoardView();
 }
 
+// show balls in page
+function updateBoardView() {
+
+    board.forEach(function (ball, index) {
+
+        if (ball) {
+            if (ball.isActive === false) {
+                $("#" + index).empty();
+                const BALL_ELEMENT = $('<div class="ball ' + COLORS[ball.color] + '"></div>')
+                $("#" + index).append(BALL_ELEMENT);
+            }
+            if (ball.isActive === true) {
+                $("#" + index).empty();
+                const SELECTED_BALL_ELEMENT = $('<div class="selectedBall ' + COLORS[ball.color] + '"></div>')
+                $("#" + index).append(SELECTED_BALL_ELEMENT);
+            }
+            debugger;
+        } else {
+            $("#" + index).empty();
+        }
+    })
+    $("h2").text("YOUR GAME POINT IS -" + " " + gamePoint);
+    if (board.every(element => element)) {
+        restartGame();
+        updateBoardView();
+    };
+
+}
 // geting random color for ball
 function getRandomColor() {
     let ballColor = getRandomNumber(0, COLORS.length - 1);
@@ -109,13 +117,14 @@ function handelCellClick(index) {
     }
     if (!BALL && (selectedBallIndex || selectedBallIndex === 0)) {
         moveBall(selectedBallIndex, index);
-        updateBoardView();
         removeHorizontalBallsLine();
         removeVerticalBallsLine();
         removeDiagonalBallsLine1();
         removeDiagonalBallsLine2();
+
         return;
     }
+
 }
 
 // click and disselect ball
@@ -132,7 +141,7 @@ function moveBall(selectedBallIndex, clickedCellIndex) {
     emptyCellsIndices = emptyCellsIndices.filter(el => el !== clickedCellIndex);
     disSelectBall(board[clickedCellIndex]);
     createRandomBalls(COLORS.length - 1);
-
+    updateBoardView();
 }
 
 // removing horizantal same colored balls line
@@ -158,11 +167,12 @@ function removeHorizontalBallsLine() {
                     board[removedBallIndex] = null;
                     gamePoint = gamePoint + 1;
                 }
-                break;
+                updateBoardView();
+                return;
             }
         }
     }
-    updateBoardView();
+
 }
 
 // removing vertical same colored balls line
@@ -188,39 +198,13 @@ function removeVerticalBallsLine() {
                     board[removedBallIndex] = null;
                     gamePoint = gamePoint + 1;
                 }
-                break;
+                updateBoardView();
+                return;
             }
         }
     }
-    updateBoardView();
+
 }
-
-// function removeDiagonalBallsLine() {
-//     for (let row = 0; row <= boardLength; row++) {
-//         debugger;
-//         for (let col = 0; col <= boardLength; col++) {
-//             const BALL = board[row * boardLength + col];
-//             if (BALL && BALL.color === checkedBallsColor) {
-//                 ballsCount++;
-//             } else {
-//                 ballsCount = 1;
-//                 checkedBallsColor = BALL ? BALL.color : null;
-//             }
-
-//             if (ballsCount === REQUIRED_NUMBER_OF_BALLS) {
-//                 for (let i = row; i >= 0; i--) {
-//                     let removedBallIndex = row * boardLength + i;
-//                     emptyCellsIndices.push(removedBallIndex);
-//                     board[removedBallIndex] = null;
-//                     gamePoint = gamePoint + 1;
-//                 }
-
-//                 break;
-//             }
-//             row++;
-//         }
-//     }
-// }
 
 // remove diagonal from top left to right bottom
 function removeDiagonalBallsLine1() {
@@ -287,11 +271,27 @@ function removeDiagonalBallsLine2() {
         }
     }
 }
+
+// restart game if user lose
+function restartGame() {
+    emptyCellsIndices = board.map((element, index) => index);
+    // let answer = prompt("DO YOU WANT TO PLAY AGAIN? yes or no");
+    // if (answer === "yes") {
+    board = [];
+    console.log(board, emptyCellsIndices);
+    gamePoint = 0;
+    //     } else {
+    //         alert("THANKS FOR PLAYING!");
+    //     }
+    startGame();
+}
+
+
 function startGame() {
     boardLength = parseInt(prompt("write the number of vertical and horizontal boxes"));
     randomBallsCount = parseInt(prompt("write the number of balls you wanted to add every time"));
-    createBoard(boardLength);
-    createRandomBalls(randomBallsCount);
+    createBoard();
+    createRandomBalls();
 
 }
 
