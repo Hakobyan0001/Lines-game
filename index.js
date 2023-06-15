@@ -37,8 +37,7 @@ function createRandomBalls() {
 
     while (i < randomBallsCount) {
         const RANDOM_INDEX = getRandomIndex();
-        const RANDOM_COLOR = getRandomColor();
-
+        const RANDOM_COLOR = getRandomColor()
         const BALL = {
             color: RANDOM_COLOR,
             isActive: false
@@ -67,16 +66,15 @@ function updateBoardView() {
                 const SELECTED_BALL_ELEMENT = $('<div class="selectedBall ' + COLORS[ball.color] + '"></div>')
                 $("#" + index).append(SELECTED_BALL_ELEMENT);
             }
-            debugger;
         } else {
             $("#" + index).empty();
         }
     })
     $("h2").text("YOUR GAME POINT IS -" + " " + gamePoint);
-    if (board.every(element => element)) {
-        restartGame();
-        updateBoardView();
-    };
+    // if (board.every(element => element)) {
+    //     restartGame();
+    //     updateBoardView();
+    // };
 
 }
 // geting random color for ball
@@ -241,8 +239,8 @@ function removeDiagonalBallsLine1() {
 
 // remove diagonal from bottom left to top right 
 function removeDiagonalBallsLine2() {
-    for (let row = boardLength - 1; row >= boardLength - REQUIRED_NUMBER_OF_BALLS - 1; row--) {
-
+    for (let row = boardLength - 1; row >= REQUIRED_NUMBER_OF_BALLS - 1; row--) {
+debugger;
         for (let col = 0; col <= boardLength - REQUIRED_NUMBER_OF_BALLS; col++) {
             let ballsCount = 1;
             let checkedBallsColor = null;
