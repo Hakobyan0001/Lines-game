@@ -7,6 +7,11 @@
 
 }
 
+.input-group {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* board side */
 #board {
     background-color: #eee;
