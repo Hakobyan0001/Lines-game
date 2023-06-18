@@ -1,7 +1,7 @@
 let board;
-let boardLength;
-let randomBallsCount;
 const COLORS = ["red", "green", "blue"];
+let boardLength;
+let ballsCount;
 let emptyCellsIndices = [];
 let selectedBallIndex;
 let gamePoint = 0;
@@ -10,11 +10,20 @@ const REQUIRED_NUMBER_OF_BALLS = 5;
 // creating board
 function createBoard() {
   board = new Array(boardLength ** 2).fill(null);
+  console.log(board);
+  emptyCellsIndices = board.map((element, index) => index);
+  initBoardview();
+}
+
+function refreshBoard() {
+  board = new Array(boardLength ** 2).fill(null);
+  console.log(board);
   emptyCellsIndices = board.map((element, index) => index);
 }
 
 // show board in page
 function initBoardview() {
+  debugger;
   board.forEach(function (cell, index) {
     const CUBE_ELEMENT = $("<div></div>")
       .attr({
@@ -34,8 +43,7 @@ function initBoardview() {
 // creating balls and pushing in board
 function createRandomBalls() {
   let i = 0;
-
-  while (i < randomBallsCount) {
+  while (i < ballsCount) {
     const RANDOM_INDEX = getRandomIndex();
     const RANDOM_COLOR = getRandomColor();
     const BALL = {
@@ -139,8 +147,11 @@ function moveBall(selectedBallIndex, clickedCellIndex) {
   createRandomBalls(COLORS.length - 1);
   updateBoardView();
   if (board.every((element) => element)) {
-    restartGame();
+    boardLength = null;
+    ballsCount = null;
+    gameOver();
   }
+
 }
 
 // removing horizantal same colored balls line
@@ -193,10 +204,9 @@ function removeVerticalBallsLine() {
 function deleteBalls(fromRow, fromCol, toRow, toCol) {
   for (row = fromRow; row <= toRow; row++) {
     for (col = fromCol; col <= toCol; col++) {
-      debugger;
+
       let removedBallIndex = row * boardLength + col;
       emptyCellsIndices.push(removedBallIndex);
-      console.log(emptyCellsIndices);
       board[removedBallIndex] = null;
       gamePoint = gamePoint + 1;
     }
@@ -270,30 +280,42 @@ function removeDiagonalBallsLine2() {
 
 // request about board size and balls number
 function decideBoardSizeAndBallsNumber() {
-  // boardLength = parseInt(
-  //   prompt("write the number of vertical and horizontal boxes")
-  // );
-  // randomBallsCount = parseInt(
-  //   prompt("write the number of balls you wanted to add every time")
-  // );
-  // return boardLength, randomBallsCount;
+  let inputForm = document.getElementById("inputForm");
+  inputForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    boardLength = document.getElementById("boardLength").value;
+    ballsCount = document.getElementById("ballsCount").value;
+
+    if (boardLength.value == "" || ballsCount.value == "") {
+      alert("Please enter a value in both fields.");
+    } else {
+      boardLength = parseInt(boardLength);
+      ballsCount = parseInt(ballsCount);
+    }
+    if (isNaN(boardLength) || isNaN(ballsCount)) {
+      alert("Please enter valid numbers for board length and balls count.");
+    }
+    else if () {
+
+    } else {
+      startGame()
+    }
+  });
 }
 
 // restart game if user lose
-function restartGame() {
-  createBoard();
+function gameOver() {
+
+  alert("GAME OVER");
   gamePoint = 0;
-  decideBoardSizeAndBallsNumber();
-  createRandomBalls();
+  refreshBoard();
   updateBoardView();
 }
 
 // function for start game
 function startGame() {
-  decideBoardSizeAndBallsNumber();
   createBoard();
-  initBoardview();
   createRandomBalls();
 }
 
-startGame();
+decideBoardSizeAndBallsNumber();
