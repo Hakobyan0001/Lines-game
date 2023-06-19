@@ -2,6 +2,8 @@ let board;
 const COLORS = ["red", "green", "blue"];
 let boardLength;
 let ballsCount;
+let currentBoardLength;
+let currentBallsCount;
 let emptyCellsIndices = [];
 let selectedBallIndex;
 let gamePoint = 0;
@@ -16,6 +18,7 @@ function createBoard() {
 // show board in page
 function initBoardview() {
   board.forEach(function (cell, index) {
+    debugger;
     const CUBE_ELEMENT = $("<div></div>")
       .attr({
         class: "cube",
@@ -34,7 +37,6 @@ function initBoardview() {
 // creating balls and pushing in board
 function createRandomBalls() {
   let i = 0;
-  debugger;
   while (i < ballsCount) {
     const RANDOM_INDEX = getRandomIndex();
     const RANDOM_COLOR = getRandomColor();
@@ -283,9 +285,11 @@ function inputBoardSizeAndBallsNumber() {
     if (isNaN(boardLength) || isNaN(ballsCount)) {
       alert("Please enter valid numbers for board length and balls count.");
     }
-    debugger;
     if (board === undefined) {
       startGame();
+    }
+    else if (currentBoardLength != boardLength || currentBallsCount != ballsCount) {
+      refreshGame();
     } else {
       restartGame();
     }
@@ -296,9 +300,21 @@ function inputBoardSizeAndBallsNumber() {
 function gameOver() {
   alert("GAME OVER");
 }
+
+//refresh game board
+function refreshGame() {
+  debugger;
+  currentBoardLength = boardLength;
+  currentBallsCount = ballsCount;
+  board = [];
+
+  createBoard();
+  updateBoardView();
+  initBoardview();
+  createRandomBalls();
+}
 // restarting game after lose
 function restartGame() {
-  debugger;
   board = board.fill(null);
   emptyCellsIndices = board.map((element, index) => index);
   gamePoint = 0;
@@ -307,6 +323,8 @@ function restartGame() {
 }
 // function for start game
 function startGame() {
+  currentBoardLength = boardLength;
+  currentBallsCount = ballsCount;
   createBoard();
   initBoardview();
   createRandomBalls();
