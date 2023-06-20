@@ -18,7 +18,6 @@ function createBoard() {
 // show board in page
 function initBoardview() {
   board.forEach(function (cell, index) {
-    debugger;
     const CUBE_ELEMENT = $("<div></div>")
       .attr({
         class: "cube",
@@ -32,6 +31,10 @@ function initBoardview() {
       "grid-template-columns": "repeat(" + boardLength + ", 1fr)",
     });
   });
+}
+
+function deleteCells() {
+  $("#board").empty();
 }
 
 // creating balls and pushing in board
@@ -121,8 +124,8 @@ function handelCellClick(index) {
     removeDiagonalBallsLine1();
     removeDiagonalBallsLine2();
     if (board.every((element) => element)) {
-      gameOver();
-      restartGame();
+      setTimeout(gameOver, 500);
+      setTimeout(restartGame, 1000);
     }
     return;
   }
@@ -273,22 +276,18 @@ function inputBoardSizeAndBallsNumber() {
   let inputForm = document.getElementById("inputForm");
   inputForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    boardLength = document.getElementById("boardLength").value;
-    ballsCount = document.getElementById("ballsCount").value;
-
-    if (boardLength.value == "" || ballsCount.value == "") {
-      alert("Please enter a value in both fields.");
-    } else {
-      boardLength = parseInt(boardLength);
-      ballsCount = parseInt(ballsCount);
-    }
+    boardLength = parseInt(document.getElementById("boardLength").value);
+    ballsCount = parseInt(document.getElementById("ballsCount").value);
     if (isNaN(boardLength) || isNaN(ballsCount)) {
       alert("Please enter valid numbers for board length and balls count.");
+      return;
     }
     if (board === undefined) {
       startGame();
-    }
-    else if (currentBoardLength != boardLength || currentBallsCount != ballsCount) {
+    } else if (
+      currentBoardLength != boardLength ||
+      currentBallsCount != ballsCount
+    ) {
       refreshGame();
     } else {
       restartGame();
@@ -298,18 +297,15 @@ function inputBoardSizeAndBallsNumber() {
 
 // say game over if user lose
 function gameOver() {
-  alert("GAME OVER");
+  alert("GAME OVER"), 1000;
 }
 
 //refresh game board
 function refreshGame() {
-  debugger;
   currentBoardLength = boardLength;
   currentBallsCount = ballsCount;
-  board = [];
-
+  deleteCells();
   createBoard();
-  updateBoardView();
   initBoardview();
   createRandomBalls();
 }
